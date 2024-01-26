@@ -20,7 +20,6 @@
                                     <th class="d-none d-xl-table-cell">Website</th>
                                     <th class="d-none d-xl-table-cell" title="Contact Number">Contact No.</th>
                                     <th class="d-none d-xl-table-cell">Country</th>
-                                    <th>Status</th>
                                     <th class="d-none d-md-table-cell" style="width: 100px;">Action</th>
                                 </tr>
                             </thead>
@@ -33,7 +32,6 @@
                                     <td class="">{{ $business->website }}</td>
                                     <td class="">{{ $business->contact_number }}</td>
                                     <td class="">{{ $business->country }}</td>
-                                    <td><span class="badge bg-success">{{ $business->status }}</span></td>
                                     <td class="action-td">
                                         <a href="{{ url('businesses/'. $business->id) }}">
                                             <i class="align-middle me-2" data-feather="eye"></i>

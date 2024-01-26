@@ -14,15 +14,14 @@ use \App\Http\Controllers\BusinessController;
 |
 */
 
-Route::get('/home', function () {
-    return view('pages.home');
-});
 
-Route::get('/', [AuthController::class,'login']);
+
+Route::get('/', [AuthController::class,'login'])->name('login');
 Route::post('post-login', [AuthController::class,'postLogin']);
 
-//Route::get('businesses', [BusinessController::class, 'index']);
-//Route::get('businesses/create', [BusinessController::class, 'create']);
-//Route::post('businesses', [BusinessController::class, 'store']);
-//Route::get('businesses', [BusinessController::class, 'index']);
-Route::resource('businesses', BusinessController::class);
+Route::middleware(['auth'])->group(function () {
+    Route::get('/home', function () {
+        return view('pages.home');
+    });
+    Route::resource('businesses', BusinessController::class);
+});
