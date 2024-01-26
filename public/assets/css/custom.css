@@ -1,9 +1,45 @@
+.content {
+    padding: 1rem 1rem !important;
+}
+.action-td {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
 .card-header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     padding-bottom: 5px;
+}
+.business sup {
+    color: red;
 }
 .form-label {
     font-weight: bold;
     margin-bottom: 0.3rem !important;
+}
+
+.view-table {
+    margin: 10px;
+    width: 98%;
+    max-width: 98%;
+}
+.view-table thead,
+.view-table tbody,
+.view-table th {
+    padding: 3px;
+    font-size: 12px;
+    text-align: center;
+}
+.view-table th,
+.view-table td {
+    border: 1px solid #e7e7e7;
+}
+.view th,
+.view td {
+    text-align: left;
+    padding-left: 15px;
+}
+.view th {
+    width: 25%;
 }

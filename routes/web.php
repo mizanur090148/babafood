@@ -21,6 +21,8 @@ Route::get('/home', function () {
 Route::get('/', [AuthController::class,'login']);
 Route::post('post-login', [AuthController::class,'postLogin']);
 
-Route::get('businesses', [BusinessController::class, 'index']);
-Route::get('businesses/create', [BusinessController::class, 'create']);
-Route::post('businesses', [BusinessController::class, 'store']);
+//Route::get('businesses', [BusinessController::class, 'index']);
+//Route::get('businesses/create', [BusinessController::class, 'create']);
+//Route::post('businesses', [BusinessController::class, 'store']);
+//Route::get('businesses', [BusinessController::class, 'index']);
+Route::resource('businesses', BusinessController::class);

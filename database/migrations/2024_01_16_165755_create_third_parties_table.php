@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('username', 50)->nullable();
             $table->string('email', 50)->unique();
             $table->string('password');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

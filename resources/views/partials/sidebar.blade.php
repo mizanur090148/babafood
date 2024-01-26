@@ -17,7 +17,7 @@
 
             <li class="sidebar-item">
                 <a class="sidebar-link" href="{{ url('/businesses') }}">
-                    <i class="align-middle" data-feather="user"></i> <span class="align-middle">All Businesses</span>
+                    <i class="align-middle" data-feather="user"></i> <span class="align-middle">Businesses</span>
                 </a>
             </li>
 

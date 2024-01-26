@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BusinessPostRequest;
+use App\Models\Business;
 use App\Models\ThirdParty;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
+use Session, DB;
 
 class BusinessController extends Controller
 {
@@ -13,7 +18,11 @@ class BusinessController extends Controller
      */
     public function index()
     {
-        return view('pages.business.index');
+        $businesses = Business::latest()->paginate();
+
+        return view('pages.business.index', [
+            'businesses' => $businesses
+        ]);
     }
 
     /**
@@ -28,14 +37,16 @@ class BusinessController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(BusinessPostRequest $request)
-    {dd($request->all());
+    {
         try {
-            $user = ThirdParty::create($request->only('prefix','firstname','lastname','username','email','password'));
-            if ($user) {
-                ThirdParty::create($request->except('prefix','firstname','lastname','username','email','password'));
-            }
+            DB::transaction(function () use ($request) {
+                $thirdParty = ThirdParty::create($request->only('prefix', 'firstname', 'lastname', 'username', 'email', 'password'));
+                $input = $request->except('prefix', 'firstname', 'lastname', 'username', 'email', 'password');
+                $thirdParty->business()->create($input);
+            });
+            Session::flash('success', 'Successfully Created');
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            Session::flash('error', $e->getMessage());
         }
         return redirect('businesses');
     }
@@ -45,7 +56,10 @@ class BusinessController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $business = Business::with('thirdParty')->where('id', $id)->first();
+        return view('pages.business.view', [
+            'business' => $business
+        ]);
     }
 
     /**
@@ -53,15 +67,30 @@ class BusinessController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $business = Business::with('thirdParty')->where('id', $id)->first();
+        return view('pages.business.edit', [
+            'business' => $business
+        ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * @param BusinessPostRequest $request
+     * @param string $id
+     * @return Application|\Illuminate\Foundation\Application|RedirectResponse|Redirector
      */
-    public function update(Request $request, string $id)
+    public function update(BusinessPostRequest $request, string $id)
     {
-        //
+        try {
+            DB::transaction(function () use ($request, $id) {
+                $business = Business::find($id);
+                ThirdParty::where('id', $business->third_party_id)->update($request->only('prefix', 'firstname', 'lastname', 'username', 'email'));
+                $business->update($request->except('prefix', 'firstname', 'lastname', 'username', 'email'));
+            });
+            Session::flash('success', S_UPDATE_MSG);
+        } catch (\Exception $e) {
+            Session::flash('error', E_UPDATE_MSG);
+        }
+        return redirect('businesses');
     }
 
     /**
@@ -69,6 +98,16 @@ class BusinessController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            DB::transaction(function () use ($id) {
+                $data = ThirdParty::find($id);
+                $data->business()->delete();
+                $data->delete();
+            });
+            Session::flash('success', S_DELETE_MSG);
+        } catch (\Exception $e) {
+            Session::flash('error', E_DELETE_MSG);
+        }
+        return redirect()->back();
     }
 }

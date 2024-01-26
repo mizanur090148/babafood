@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 
 class BusinessPostRequest extends FormRequest
 {
@@ -21,11 +23,11 @@ class BusinessPostRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'business_name' => 'required|unique:businesses|max:255',
+        $input = [
+            'business_name' => 'required|max:255|unique:businesses,business_name,' . request('id'),
             'start_date' => 'nullable|date',
             'contact_number' => 'required',
-            'alternate_contact_number' => 'required',
+            //'alternate_contact_number' => 'required',
             'country' => 'required',
             'state' => 'required',
             'city' => 'required',
@@ -35,10 +37,13 @@ class BusinessPostRequest extends FormRequest
             'prefix' => 'required',
             'firstname' => 'required',
             'lastname' => 'required',
-            'username' => 'required',
-            'email' => 'required|unique:third_parties|max:50',
-            'password' => 'required|min:5',
-            'confirm_password' => 'required|min:5',
+            'username' => 'required|max:40',
+            'email' => 'required|max:50|unique:third_parties,email,' . request('id'),
+           // 'confirmed' => 'required',
         ];
+        if (!request('id')) {
+            $input['password'] = ['required', 'confirmed', Password::min(6)];
+        }
+        return $input;
     }
 }
